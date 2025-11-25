@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اصغر فیلم نتی | تماشای آنلاین فیلم و سریال</title>
+    <style>
+        /* --- تنظیمات کلی (تم تاریک مثل نماوا) --- */
+        :root {
+            --bg-color: #141414; /* سیاه ذغالی */
+            --header-bg: #000000;
+            --accent: #f5c518; /* رنگ طلایی برای برند اصغر فیلم */
+            --text-white: #ffffff;
+            --text-gray: #aaaaaa;
+        }
+
+        body {
+            font-family: Tahoma, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            overflow-x: hidden;
+        }
+
+        /* --- هدر (منو) --- */
+        header {
+            background-color: var(--header-bg);
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-white);
+        }
+
+        .search-box input {
+            background: #333;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            outline: none;
+        }
+
+        /* --- بنر اصلی (Hero Section) --- */
+        .hero {
+            height: 500px;
+            background: linear-gradient(to top, #141414, transparent), 
+                        url('https://c4.wallpaperflare.com/wallpaper/764/590/391/inception-leonardo-dicaprio-movie-posters-2560x1600-entertainment-movies-hd-art-wallpaper-preview.jpg'); 
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px black;
+        }
+
+        .hero p {
+            max-width: 600px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px black;
+        }
+
+        .play-btn {
+            background-color: var(--accent);
+            color: black;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        .play-btn:hover {
+            background-color: #d4a912;
+        }
+
+        /* --- ردیف فیلم‌ها (اسلایدر) --- */
+        .category-title {
+            margin: 30px 40px 10px 0;
+            font-size: 1.3rem;
+            border-right: 4px solid var(--accent);
+            padding-right: 10px;
+        }
+
+        .movie-row {
+            display: flex;
+            overflow-x: auto; /* اسکرول افقی */
+            padding: 20px 40px;
+            gap: 15px;
+            scrollbar-width: none; /* مخفی کردن اسکرول بار در فایرفاکس */
+        }
+        
+        /* مخفی کردن اسکرول بار در کروم */
+        .movie-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .movie-card {
+            min-width: 180px;
+            height: 270px;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.1); /* بزرگ شدن موقع هاور */
+            z-index: 10;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+        }
+
+        .movie-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .movie-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, black, transparent);
+            padding: 10px;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .movie-card:hover .movie-overlay {
+            opacity: 1;
+        }
+
+        /* --- پلیر ویدیو (فیک) --- */
+        #videoPlayerModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .video-box {
+            width: 80%;
+            max-width: 800px;
+            background: #000;
+            border: 2px solid #333;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        
+        /* فوتر */
+        footer {
+            margin-top: 50px;
+            padding: 30px;
+            background-color: #0b0b0b;
+            text-align: center;
+            color: #555;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- هدر -->
+    <header>
+        <div style="display: flex; align-items: center; gap: 30px;">
+            <a href="#" class="logo">اصغر فیلم نتی</a>
+            <nav class="nav-links">
+                <a href="#">خانه</a>
+                <a href="#">فیلم‌ها</a>
+                <a href="#">سریال‌ها</a>
+                <a href="#">ایرانی</a>
+                <a href="#">کودک</a>
+            </nav>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="جستجوی فیلم...">
+        </div>
+    </header>
+
+    <!-- بنر فیلم ویژه -->
+    <section class="hero">
+        <h1>اینسپشن (تلقین)</h1>
+        <p>دزدان حرفه‌ای که با ورود به رویاهای افراد، اسرار آن‌ها را می‌دزدند، حالا مأموریتی غیرممکن دارند...</p>
+        <button class="play-btn" onclick="openPlayer('اینسپشن')">▶ تماشای آنلاین</button>
+    </section>
+
+    <!-- ردیف 1: فیلم‌های ایرانی -->
+    <div class="category-title">ویژه اصغر فیلم (ایرانی)</div>
+    <div class="movie-row">
+        <!-- کارت فیلم 1 -->
+        <div class="movie-card" onclick="openPlayer('گشت ارشاد 3')">
+            <img src="https://via.placeholder.com/180x270/222/fff?text=Gasht+3" class="movie-img">
+            <div class="movie-overlay">گشت ارشاد 3</div>
+        </div>
+        <!-- کارت فیلم 2 -->
+        <div class="movie-card" onclick="openPlayer('دینامیت')">
+            <img src="https://via.placeholder.com/180x270/e74c3c/fff?text=Dynamite" class="movie-img">
+            <div class="movie-overlay">دینامیت</div>
+        </div>
+        <div class="movie-card" onclick="openPlayer('فسیل')">
+            <img src="https://via.placeholder.com/180x270/f1c40f/000?text=Fosil" class="movie-img">
+            <div class="movie-overlay">فسیل</div>
+        </div>
+        <div class="movie-card" onclick="openPlayer('هتل')">
+            <img src="https://via.placeholder.com/180x270/8e44ad/fff?text=Hotel" class="movie-img">
+            <div class="movie-overlay">هتل</div>
+        </div>
+        <div class="movie-card" onclick="openPlayer('تمساح خونی')">
+            <img src="https://via.placeholder.com/180x270/c0392b/fff?text=Temsah" class="movie-img">
+            <div class="movie-overlay">تمساح خونی</div>
+        </div>
+        <div class="movie-card">
+            <img src="https://via.placeholder.com/180x270/333/fff?text=Coming+Soon" class="movie-img">
+        </div>
+    </div>
+
+    <!-- ردیف 2: اکشن و خارجی -->
+    <div class="category-title">برترین‌های اکشن جهان</div>
+    <div class="movie-row">
+        <div class="movie-card" onclick="openPlayer('جان ویک 4')">
+            <img src="https://via.placeholder.com/180x270/000/fff?text=John+Wick+4" class="movie-img">
+            <div class="movie-overlay">جان ویک 4</div>
+        </div>
+        <div class="movie-card" onclick="openPlayer('اونجرز')">
+            <img src="https://via.placeholder.com/180x270/2980b9/fff?text=Avengers" class="movie-img">
+            <div class="movie-overlay">انتقام جویان</div>
+        </div>
+        <div class="movie-card" onclick="openPlayer('اسپایدرمن')">
+            <img src="https://via.placeholder.com/180x270/c0392b/fff?text=Spider-Man" class="movie-img">
+            <div class="movie-overlay">مرد عنکبوتی</div>
+        </div>
+        <div class="movie-card" onclick="openPlayer('بتمن')">
+            <img src="https://via.placeholder.com/180x270/111/fff?text=The+Batman" class="movie-img">
+            <div class="movie-overlay">بتمن</div>
+        </div>
+        <div class="movie-card" onclick="openPlayer('جوکر')">
+            <img src="https://via.placeholder.com/180x270/27ae60/fff?text=Joker" class="movie-img">
+            <div class="movie-overlay">جوکر</div>
+        </div>
+    </div>
+
+    <!-- مودال پخش فیلم -->
+    <div id="videoPlayerModal">
+        <span class="close-btn" onclick="closePlayer()">&times;</span>
+        <div class="video-box">
+            <h2 id="playingTitle" style="color: var(--accent);"></h2>
+            <div style="background: #111; height: 300px; display: flex; align-items: center; justify-content: center; margin: 20px 0; border-radius: 8px;">
+                <p style="color: #777;">(محل پخش فیلم در سرور اصلی)</p>
+                <!-- اینجا تگ video قرار میگیره -->
+            </div>
+            <p>در حال تماشا از <b>اصغر فیلم نتی</b> هستید...</p>
+            <button onclick="closePlayer()" style="padding: 10px 20px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer;">بستن</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>تمامی حقوق متعلق به «اصغر فیلم نتی» می‌باشد &copy; 1403</p>
+        <p>تماشای فیلم بدون سانسور با کیفیت 4K (الکی!)</p>
+    </footer>
+
+    <script>
+        // باز کردن پلیر
+        function openPlayer(title) {
+            const modal = document.getElementById('videoPlayerModal');
+            const titleElem = document.getElementById('playingTitle');
+            
+            titleElem.innerText = "در حال پخش: " + title;
+            modal.style.display = 'flex';
+        }
+
+        // بستن پلیر
+        function closePlayer() {
+            document.getElementById('videoPlayerModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
